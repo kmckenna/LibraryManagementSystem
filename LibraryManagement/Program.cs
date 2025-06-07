@@ -1,114 +1,65 @@
-﻿class LibraryManager
+﻿using System;
+using System.Collections.Generic;
+
+class LibraryManager
 {
     static void Main()
     {
-        string book1 = "";
-        string book2 = "";
-        string book3 = "";
-        string book4 = "";
-        string book5 = "";
+        List<string> books = new List<string>();
+        const int maxBooks = 5;
 
         while (true)
         {
             Console.WriteLine("Would you like to add or remove a book? (add/remove/exit)");
-            string action = Console.ReadLine() ?? "";
+            string? input = Console.ReadLine();
+            string action = input == null ? "" : input.ToLower();
 
-            if (string.Equals(action, "add", StringComparison.OrdinalIgnoreCase))
+            if (action == "add")
             {
-                if (!string.IsNullOrEmpty(book1) && !string.IsNullOrEmpty(book2) && 
-                    !string.IsNullOrEmpty(book3) && !string.IsNullOrEmpty(book4) && 
-                    !string.IsNullOrEmpty(book5))
+                if (books.Count >= maxBooks)
                 {
                     Console.WriteLine("The library is full. No more books can be added.");
-                    continue;
-                }
-            
-
-                Console.WriteLine("Enter the title of the book to add:");
-                string newBook = Console.ReadLine() ?? "";
-
-                if (string.Equals(newBook, book1, StringComparison.OrdinalIgnoreCase))
-                {
-                    Console.WriteLine("Book already exists in the library.");
-                    continue;
-                }
-                if (string.Equals(newBook, book2, StringComparison.OrdinalIgnoreCase))
-                {
-                    Console.WriteLine("Book already exists in the library.");
-                    continue;
-                }
-                if (string.Equals(newBook, book3, StringComparison.OrdinalIgnoreCase))
-                {
-                    Console.WriteLine("Book already exists in the library.");
-                    continue;
-                }
-                if (string.Equals(newBook, book4, StringComparison.OrdinalIgnoreCase))
-                {
-                    Console.WriteLine("Book already exists in the library.");
-                    continue;
-                }
-                if (string.Equals(newBook, book5, StringComparison.OrdinalIgnoreCase))
-                {
-                    Console.WriteLine("Book already exists in the library.");
-                    continue;
-                }
-
-                if (string.IsNullOrEmpty(book1))
-                {
-                    book1 = newBook;
-                }
-                else if (string.IsNullOrEmpty(book2))
-                {
-                    book2 = newBook;
-                }
-                else if (string.IsNullOrEmpty(book3))
-                {
-                    book3 = newBook;
-                }
-                else if (string.IsNullOrEmpty(book4))
-                {
-                    book4 = newBook;
-                }
-                else if (string.IsNullOrEmpty(book5))
-                {
-                    book5 = newBook;
-                }
-      
-            }
-            else if (string.Equals(action, "remove", StringComparison.OrdinalIgnoreCase) && 
-                     (!string.IsNullOrEmpty(book1) || !string.IsNullOrEmpty(book2) || 
-                      !string.IsNullOrEmpty(book3) || !string.IsNullOrEmpty(book4) || 
-                      !string.IsNullOrEmpty(book5))) 
-            {
-                Console.WriteLine("Enter the title of the book to remove:");
-                string removeBook = Console.ReadLine() ?? "";
-
-                if (string.Equals(removeBook, book1, StringComparison.OrdinalIgnoreCase))
-                {
-                    book1 = "";
-                }
-                else if (string.Equals(removeBook, book2, StringComparison.OrdinalIgnoreCase))
-                {
-                    book2 = "";
-                }
-                else if (string.Equals(removeBook, book3, StringComparison.OrdinalIgnoreCase))
-                {
-                    book3 = "";
-                }
-                else if (string.Equals(removeBook, book4, StringComparison.OrdinalIgnoreCase))
-                {
-                    book4 = "";
-                }
-                else if (string.Equals(removeBook, book5, StringComparison.OrdinalIgnoreCase))
-                {
-                    book5 = "";
                 }
                 else
                 {
-                    Console.WriteLine("Book not found.");
+                    Console.WriteLine("Enter the title of the book to add:");
+                    string newBook = Console.ReadLine() ?? "";
+                    if (string.IsNullOrWhiteSpace(newBook))
+                    {
+                        Console.WriteLine("Book title cannot be empty.");
+                    }
+                    else if (books.Exists(b => b.Equals(newBook, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        Console.WriteLine("This book is already in the library.");
+                    }
+                    else
+                    {
+                        books.Add(newBook);
+                    }
                 }
             }
-            else if (string.Equals(action, "exit", StringComparison.OrdinalIgnoreCase))
+            else if (action == "remove")
+            {
+                if (books.Count == 0)
+                {
+                    Console.WriteLine("The library is empty. No books to remove.");
+                }
+                else
+                {
+                    Console.WriteLine("Enter the title of the book to remove:");
+                    string removeBook = Console.ReadLine() ?? "";
+                    int index = books.FindIndex(b => b.Equals(removeBook, StringComparison.OrdinalIgnoreCase));
+                    if (index >= 0)
+                    {
+                        books.RemoveAt(index);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Book not found.");
+                    }
+                }
+            }
+            else if (action == "exit")
             {
                 break;
             }
@@ -119,11 +70,17 @@
 
             // Display the list of books
             Console.WriteLine("Available books:");
-            if (!string.IsNullOrEmpty(book1)) Console.WriteLine(book1);
-            if (!string.IsNullOrEmpty(book2)) Console.WriteLine(book2);
-            if (!string.IsNullOrEmpty(book3)) Console.WriteLine(book3);
-            if (!string.IsNullOrEmpty(book4)) Console.WriteLine(book4);
-            if (!string.IsNullOrEmpty(book5)) Console.WriteLine(book5);
+            if (books.Count == 0)
+            {
+                Console.WriteLine("(none)");
+            }
+            else
+            {
+                foreach (var book in books)
+                {
+                    Console.WriteLine(book);
+                }
+            }
         }
     }
 }
